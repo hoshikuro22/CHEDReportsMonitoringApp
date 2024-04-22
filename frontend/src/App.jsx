@@ -10,7 +10,7 @@ function App() {
   
 
   return (
-<div>
+<div className='w-screen'>
 <Routes>
 <Route path='/login/*' element={<LandingPage/>} />
 <Route path='/' element={<HomePage />} />  

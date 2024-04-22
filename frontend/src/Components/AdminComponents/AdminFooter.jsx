@@ -35,11 +35,11 @@ export default function AdminFooter() {
                 X
               </button>
               <p className="font-bold text-2xl mb-3 text-black">About Us</p>
-              <div className="space-y-2 text-black">
+              <div className="space-y-1 text-black">
                 <div className="flex justify-between ">
                   <div>Developer</div>
                   <div className="font-semibold">
-                    College of Information Technology
+                 Tipsy Bless T. Lagrosas
                   </div>
                   <div className="font-semibold"></div>
                   <div className="font-semibold"></div>
@@ -48,16 +48,13 @@ export default function AdminFooter() {
                   <div className="flex justify-between">
                     <div>Email</div>
                     <div className="font-semibold">superlaggerxz@gmail.com</div>
-                    <div className="font-semibold">von@gmail.com</div>
-                    <div className="font-semibold">jemry@gmail.com</div>
+              
                   </div>
                 </div>
                 <div className="space-y-1">
                   <div className="flex justify-between">
                     <div>Mobile Number</div>
                     <div className="font-semibold">09972078367</div>
-                    <div className="font-semibold">091234</div>
-                    <div className="font-semibold">0912345</div>
                   </div>
                 </div>
                 <div className="flex justify-between"></div>

@@ -4,6 +4,8 @@ import cors from "cors";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import bcrypt from "bcrypt";
+import reportsRoutes from "./routes/Reports.js";
+import coaauditreportsRoutes from "./routes/CoaAuditReports.js"
 
 const app = express();
 app.use(express.json());
@@ -100,6 +102,11 @@ app.post("/login", (req, res) => {
       }
     });
   });
+
+  app.use("/", reportsRoutes);
+  app.use("/", coaauditreportsRoutes);
+
+
 
 app.get("/logout", (req, res) => {
     res.clearCookie("token");
