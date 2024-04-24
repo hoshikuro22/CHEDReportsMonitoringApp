@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { makeRequest } from "../../../../axios";
+import PropTypes from "prop-types";
 
 export default function COAReportsAdminTable() {
 
@@ -44,7 +45,9 @@ export default function COAReportsAdminTable() {
             <td className="border px-3 py-2 text-left">{coaauditreport.details}</td>
             <td className="border px-3 py-2 text-left">{coaauditreport.date_received}</td>
             <td className="border px-3 py-2 text-left">{coaauditreport.compliance_status}</td>
-            <td className="border px-3 py-2 text-left">{coaauditreport.file}</td>
+            <td className="border px-4 py-2 text-left">
+                  <FileLink item={coaauditreport} />
+                </td>
             <td className="border px-3 py-2 text-left">{coaauditreport.remarks}</td>
             <td className="border px-3 py-2 text-left">{coaauditreport.personnel_name}</td>
           </tr>
@@ -54,3 +57,45 @@ export default function COAReportsAdminTable() {
   </div>
 );
 }
+
+const FileLink = ({ item }) => {
+  const [fileUrl, setFileUrl] = useState(
+    `communicationhistoryfiles/${item.file}`
+  );
+
+  useEffect(() => {
+    const checkFile = async () => {
+      try {
+        const response = await makeRequest.get(fileUrl);
+
+        if (!response.ok) {
+          setFileUrl(`coaauditreportfiles/${item.file}`);
+        }
+      } catch (error) {
+        console.error("Error fetching file:", error);
+        setFileUrl(`coaauditreportfiles/${item.file}`);
+      }
+    };
+
+    checkFile();
+  }, [item.file, fileUrl]);
+
+  // Truncate the file name to 25 characters
+  const truncatedFileName =
+    item.file.length > 40 ? item.file.substring(0, 40) + "..." : item.file;
+
+  return (
+    <a
+      href={makeRequest.defaults.baseURL + fileUrl} // Use baseURL from axios.js
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-blue-500 hover:underline"
+    >
+      {truncatedFileName}
+    </a>
+  );
+};
+
+FileLink.propTypes = {
+  item: PropTypes.object,
+};
