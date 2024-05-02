@@ -77,10 +77,27 @@ router.get("/getCOAAuditReports", (req, res) => {
 });
 
 //CREATE
+const getNextCOAReportID = async () => {
+  return new Promise((resolve, reject) => {
+    const getMaxCOAReportIDQuery =
+      "SELECT MAX(report_ID) AS maxCOAReportID FROM coa_audit_reports";
+    db.query(getMaxCOAReportIDQuery, (err, result) => {
+      if (err) {
+        console.error("Error in getMaxCOAReportIDQuery:", err);
+        reject(err);
+      } else {
+        const maxCOAReportID = result[0].maxCOAReportID || 0;
+        const nextCOAReportID = maxCOAReportID + 1;
+        console.log("nextCOAReportID:", nextCOAReportID);
+        resolve(nextCOAReportID);
+      }
+    });
+  });
+};
 
 router.post("/addCOAAuditReport", upload.single("file"), async (req, res) => {
   const {
-    coareportID,
+    // coareportID,
     reference,
     dateCreated,
     details,
@@ -98,10 +115,13 @@ router.post("/addCOAAuditReport", upload.single("file"), async (req, res) => {
     });
   }
   try {
+
+    const nextCOAReportID = await getNextCOAReportID();
+
     const COAAuditReportInsertQuery =
       "INSERT INTO coa_audit_reports (coa_report_ID, reference, date_created, details, date_received, compliance_status, remarks, personnel_ID, file ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ? )";
     const COAAuditReportInsertValues = [
-      coareportID,
+      nextCOAReportID,
       reference,
       dateCreated,
       details,
@@ -113,7 +133,7 @@ router.post("/addCOAAuditReport", upload.single("file"), async (req, res) => {
     ];
 
     console.log("COAAuditReportInsertQuery:", COAAuditReportInsertQuery);
-    console.log("documentInsertValues:", COAAuditReportInsertValues);
+    console.log("COAAuditReportInsertValues:", COAAuditReportInsertValues);
     const result = await new Promise((resolve, reject) => {
       db.query(
         COAAuditReportInsertQuery,

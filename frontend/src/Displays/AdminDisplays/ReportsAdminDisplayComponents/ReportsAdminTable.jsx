@@ -1,23 +1,15 @@
-import { useEffect, useState } from "react";
-import { makeRequest } from "../../../../axios";
 
-export default function ReportsAdminTable() {
-  const [reports, setReports] = useState([]);
 
-  useEffect(() => {
-    // Fetch data when component mounts
-    fetchReports();
-  }, []);
+import PropTypes from "prop-types";
+import { PiListMagnifyingGlass } from "react-icons/pi";
 
-  const fetchReports = async () => {
-    try {
-      const response = await makeRequest.get('/getReports');
-      setReports(response.data);
-    } catch (error) {
-      console.error('Error fetching reports:', error);
-      // Handle error state or display a message to the user
-    }
-  };
+
+export default function ReportsAdminTable({
+  currentItems,
+  handleReportListClick,
+ 
+}) {
+ 
 
 
   return (
@@ -27,25 +19,31 @@ export default function ReportsAdminTable() {
         <tr className="bg-gray-400 ">
           <th className="px-1 py-2">Report Name</th>
           <th className="px-1 py-2">Type</th>
-          <th className="px-1 py-2">Agency</th>
-          <th className="px-1 py-2">Frequency</th>
-          <th className="px-1 py-2">Date Submitted</th>
-          <th className="px-1 py-2">Personnel</th>
-          <th className="px-1 py-2">Status</th>
-          <th className="px-1 py-2">Remarks</th>
+          <th className="px-1 py-2">Requesting Agency</th>
+          <th className="px-1 py-2">Expected Frequency</th>
+          <th className="px-1 py-2">Submission Date</th>
+          <th className="px-1 py-2">Assigned Personnel</th>
+          <th className="px-1 py-2">Action</th>
         </tr>
       </thead>
       <tbody>
-        {reports.map(report => (
+        {currentItems.map(report => (
           <tr key={report.report_ID} className="hover:bg-gray-100">
-            <td className="border px-3 py-2 text-left">{report.report_description}</td>
+            <td className="border px-3 py-2 text-left">{report.report_name}</td>
             <td className="border px-3 py-2 text-left">{report.report_type}</td>
             <td className="border px-3 py-2 text-left">{report.agency_name}</td>
             <td className="border px-3 py-2 text-left">{report.expected_frequency}</td>
-            <td className="border px-3 py-2 text-left">{report.date_submitted}</td>
+            <td className="border px-3 py-2 text-left">{report.submission_date}</td>
             <td className="border px-3 py-2 text-left">{report.personnel_name}</td>
-            <td className="border px-3 py-2 text-left">{report.status}</td>
-            <td className="border px-3 py-2 text-left">{report.remarks}</td>
+            <td className="border px-3 py-2 text-left">
+            <button
+                    title="More Details"
+                    className="text-gray-500 hover:text-gray-800 font-bold"
+                    onClick={() => handleReportListClick(report.report_ID)}
+                  >
+                    <PiListMagnifyingGlass size="35px" />
+                    <div className="absolute bg-gray-800 text-white p-2 rounded shadow-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-300"></div>
+                  </button></td>
           </tr>
         ))}
       </tbody>
@@ -53,3 +51,8 @@ export default function ReportsAdminTable() {
   </div>
 );
 }
+ReportsAdminTable.propTypes = {
+  currentItems: PropTypes.array.isRequired,
+  handleReportListClick: PropTypes.func.isRequired,
+
+};

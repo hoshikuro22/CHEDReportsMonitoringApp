@@ -1,59 +1,16 @@
-import { useState } from "react";
+import PropTypes from "prop-types";
 import { IoMdAdd, IoMdClose } from "react-icons/io";
 import { CiEraser } from "react-icons/ci";
 
-export default function ReportsAdminAddForm() {
-  const [formData, setFormData] = useState({
-    reportID: "Report2024000",
-    reportName: "",
-    reportDescription: "",
-    remarks: "",
-    date_submitted: "",
-    expected_frequency: "",
-    reportType: "",
-    statusID: "",
-    personnelID: "",
-    agencyID: "",
-  });
-  console.log("the formData " + JSON.stringify(formData));
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const [showForm, setShowForm] = useState(false);
-
-  const handleHideFormClick = () => {
-    setShowForm(false);
-  };
-
-  const handleAddReportClick = () => {
-    setShowForm(true);
-    setFormData((prevData) => ({
-      ...prevData,
-    }));
-  };
-
-  const handleClearFormClick = () => {
-    setFormData((prevData) => ({
-      ...prevData,
-      reportID: "Report2024000",
-      reportName: "",
-      reportDescription: "",
-      remarks: "",
-      date_submitted: "",
-      expected_frequency: "",
-      reportType: "",
-      statusID: "",
-      personnelID: "",
-      agencyID: "",
-    }));
-  };
-
+export default function ReportsAdminAddForm({
+  handleSubmit,
+  showForm,
+  formData,
+  handleChange,
+  handleHideFormClick,
+  handleClearFormClick,
+  handleAddReportClick,
+}) {
   return (
     <div>
       {showForm ? (
@@ -61,11 +18,11 @@ export default function ReportsAdminAddForm() {
           <div className="absolute inset-0 bg-gray-900 opacity-75"></div>
           <div className="bg-white rounded-lg p-8 z-50">
             <h2 className="text-xl font-semibold mb-2">Add New Report</h2>
-            {/* <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4"> */}
-            <form className="grid grid-cols-2 gap-4">
-
+            <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
               <div className="flex flex-col">
-                <label className="mb-1 text-sm font-semibold">Report Name</label>
+                <label className="mb-1 text-sm font-semibold">
+                  Report Name
+                </label>
                 <input
                   required
                   type="text"
@@ -79,14 +36,16 @@ export default function ReportsAdminAddForm() {
               </div>
 
               <div className="flex flex-col">
-                <label className="mb-1 text-sm font-semibold">Report Type</label>
+                <label className="mb-1 text-sm font-semibold">
+                  Report Type
+                </label>
                 <input
                   required
                   type="text"
-                  id="reportName"
-                  name="reportName"
-                  placeholder="Enter Report Name"
-                  value={formData.reportName}
+                  id="reportType"
+                  name="reportType"
+                  placeholder="Enter Report Type"
+                  value={formData.reportType}
                   onChange={handleChange}
                   className="px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
                 />
@@ -97,38 +56,42 @@ export default function ReportsAdminAddForm() {
                 <input
                   required
                   type="text"
-                  id="reportName"
-                  name="reportName"
-                  placeholder="Enter Report Name"
-                  value={formData.reportName}
+                  id="agencyID"
+                  name="agencyID"
+                  placeholder="Enter Agency ID"
+                  value={formData.agencyID}
                   onChange={handleChange}
                   className="px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
                 />
               </div>
 
               <div className="flex flex-col">
-                <label className="mb-1 text-sm font-semibold">Frequency</label>
+                <label className="mb-1 text-sm font-semibold">
+                  Expected Frequency
+                </label>
                 <input
                   required
                   type="text"
-                  id="reportName"
-                  name="reportName"
-                  placeholder="Enter Report Name"
-                  value={formData.reportName}
+                  id="expected_frequency"
+                  name="expected_frequency"
+                  placeholder="Enter Expected Frequency"
+                  value={formData.expected_frequency}
                   onChange={handleChange}
                   className="px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
                 />
               </div>
 
               <div className="flex flex-col">
-                <label className="mb-1 text-sm font-semibold">Date Submitted</label>
+                <label className="mb-1 text-sm font-semibold">
+                  Submission Date
+                </label>
                 <input
                   required
                   type="text"
-                  id="reportName"
-                  name="reportName"
-                  placeholder="Enter Report Name"
-                  value={formData.reportName}
+                  id="submission_date "
+                  name="submission_date"
+                  placeholder="Enter Submission Date"
+                  value={formData.submission_date}
                   onChange={handleChange}
                   className="px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
                 />
@@ -139,38 +102,10 @@ export default function ReportsAdminAddForm() {
                 <input
                   required
                   type="text"
-                  id="reportName"
-                  name="reportName"
-                  placeholder="Enter Report Name"
-                  value={formData.reportName}
-                  onChange={handleChange}
-                  className="px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
-                />
-              </div>
-
-              <div className="flex flex-col">
-                <label className="mb-1 text-sm font-semibold">Status</label>
-                <input
-                  required
-                  type="text"
-                  id="reportName"
-                  name="reportName"
-                  placeholder="Enter Report Name"
-                  value={formData.reportName}
-                  onChange={handleChange}
-                  className="px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
-                />
-              </div>
-
-              <div className="flex flex-col">
-                <label className="mb-1 text-sm font-semibold">Remarks</label>
-                <input
-                  required
-                  type="text"
-                  id="remarks"
-                  name="remarks"
-                  placeholder="Enter Remarks"
-                  value={formData.remarks}
+                  id="personnelID"
+                  name="personnelID"
+                  placeholder="Enter Personnel ID"
+                  value={formData.personnelID}
                   onChange={handleChange}
                   className="px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
                 />
@@ -207,7 +142,7 @@ export default function ReportsAdminAddForm() {
       ) : (
         <button
           onClick={handleAddReportClick}
-          className="w-auto px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition duration-300 mb-2 flex gap-2"
+          className="w-auto px-4 py-2 text-white  bg-sky-950  rounded-lg hover:bg-sky-700 transition duration-300 mb-2 flex gap-2"
         >
           <IoMdAdd size="25px" /> Add New Report
         </button>
@@ -215,3 +150,20 @@ export default function ReportsAdminAddForm() {
     </div>
   );
 }
+ReportsAdminAddForm.propTypes = {
+  handleSubmit: PropTypes.func.isRequired, // Function to handle form submission
+  showForm: PropTypes.bool.isRequired, // Boolean indicating whether to show the form or not
+  formData: PropTypes.shape({
+    reportName: PropTypes.string.isRequired,
+    reportType: PropTypes.string.isRequired,
+    agencyID: PropTypes.string.isRequired,
+    expected_frequency: PropTypes.string.isRequired,
+    submission_date: PropTypes.string.isRequired,
+    personnelID: PropTypes.string.isRequired,
+  }),
+  handleChange: PropTypes.func.isRequired, // Function to handle form input changes
+  handleFileChange: PropTypes.func.isRequired, // Function to handle file input changes
+  handleHideFormClick: PropTypes.func.isRequired, // Function to handle hiding the form
+  handleClearFormClick: PropTypes.func.isRequired, // Function to handle clearing the form
+  handleAddReportClick: PropTypes.func.isRequired, // Function to handle adding new COA report
+};
