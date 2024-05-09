@@ -1,5 +1,33 @@
 import express from "express";
 import mysql from "mysql";
+import multer from "multer";
+import fs from "fs";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+import path from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// diri masulod na folder ang file
+const uploadsPath = join(__dirname, "..", "listofreports-uploads");
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadsPath);
+  },
+  // for the file name
+
+  filename: (req, file, cb) => {
+    const now = new Date();
+    const dateString = now.toISOString().split("T")[0]; // This will format the date as 'YYYY-MM-DD'
+    const newFilename = dateString + "-" + file.originalname;
+    cb(null, newFilename);
+    console.log(newFilename); // Logging the new filename
+  },
+});
+
+const upload = multer({ storage });
 
 const router = express.Router();
 const db = mysql.createConnection({
@@ -8,6 +36,15 @@ const db = mysql.createConnection({
   password: "",
   database: "chedreportssystem",
 });
+
+//  sa communication table to see the file
+router.use('/listofreportfiles', express.static(join(__dirname, 'listofreports-uploads')));
+
+router.get("/listofreportfiles/:filename", (req, res) => {
+  const { filename } = req.params;
+  res.sendFile(join(uploadsPath, filename));
+});
+
 
 // READ
 router.get("/getReports", (req, res) => {
@@ -18,11 +55,9 @@ router.get("/getReports", (req, res) => {
       rt.type AS report_type,
       a.agency_name,
       r.expected_frequency,
-      r.submission_date,
-      p.Full_Name AS personnel_name
+      r.submission_date
     FROM reports r
     JOIN report_type rt ON r.report_type_ID = rt.report_type_ID
-    JOIN personnel p ON r.personnel_ID = p.personnel_ID
     JOIN agency a ON r.agency_ID = a.agency_ID
     ORDER BY r.report_ID DESC;
   `;
@@ -45,10 +80,14 @@ router.get("/getReports/:id", (req, res) => {
     SELECT
       lor.list_report_ID,
       lor.report_ID,
-      lor.status,
+      lor.remarks,
       lor.date_submitted,
-      lor.file
+      lor.file,
+      p.Full_Name AS personnel_name,
+      r.report_name AS report_name
     FROM list_of_reports lor
+    JOIN personnel p ON lor.personnel_ID = p.personnel_ID
+    JOIN reports r ON lor.report_ID = r.report_ID
     WHERE lor.report_ID = ?;
   `;
   db.query(sql, [reportId], (err, data) => {
@@ -100,14 +139,13 @@ router.post("/addReport", async (req, res) => {
     agencyID,
     expected_frequency,
     submission_date,
-    personnelID,
   } = req.body;
 
   try {
 
     const nextReportID = await getNextReportID();
     const reportInsertQuery =
-      "INSERT INTO reports (report_ID, report_name, report_type_ID, agency_ID, expected_frequency, submission_date, personnel_ID) VALUES (?, ?, ?, ?, ?, ?, ?)";
+      "INSERT INTO reports (report_ID, report_name, report_type_ID, agency_ID, expected_frequency, submission_date) VALUES (?, ?, ?, ?, ?, ?)";
     const reportInsertValues = [
       nextReportID,
       reportName,
@@ -115,7 +153,6 @@ router.post("/addReport", async (req, res) => {
       agencyID,
       expected_frequency,
       submission_date,
-      personnelID,
     ];
 
     const result = await new Promise((resolve, reject) => {
@@ -142,6 +179,91 @@ router.post("/addReport", async (req, res) => {
     });
   }
 });
+
+
+//CREATE SA LIST OF REPORT
+
+//CREATE
+const getNextListOfReportID = async () => {
+  return new Promise((resolve, reject) => {
+    const getMaxListOfReportIDQuery =
+      "SELECT MAX(list_report_ID) AS maxListOfReportID FROM list_of_reports";
+    db.query(getMaxListOfReportIDQuery, (err, result) => {
+      if (err) {
+        console.error("Error in getMaxListOfReportIDQuery:", err);
+        reject(err);
+      } else {
+        const maxListOfReportID = result[0].maxListOfReportID || 0;
+        const nextListOfReportID = maxListOfReportID + 1;
+        console.log("nextCOAReportID:", nextListOfReportID);
+        resolve(nextListOfReportID);
+      }
+    });
+  });
+};
+
+router.post("/addListOfReport", upload.single("file"), async (req, res) => {
+  const {
+    // listreportID,
+    reportID,
+    remarks,
+    dateSubmitted,
+    personnelID,
+  } = req.body;
+  const file = req.file;
+
+  if (!file) {
+    return res.json({
+      Status: "Error",
+      Message: "File not provided or invalid",
+    });
+  }
+  try {
+
+    const nextListOfReportID = await getNextListOfReportID();
+
+    const ListOfReportInsertQuery =
+      "INSERT INTO list_of_reports (list_report_ID, report_ID, remarks, date_submitted, personnel_ID, file ) VALUES (?, ?, ?, ?, ?, ?)";
+    const ListOfReportInsertValues = [
+      nextListOfReportID,
+      reportID,
+      remarks,
+      dateSubmitted,
+      personnelID, 
+      file.filename,
+    ];
+
+    console.log("ListOfReportInsertQuery:", ListOfReportInsertQuery);
+    console.log("ListOfReportInsertValues:", ListOfReportInsertValues);
+    const result = await new Promise((resolve, reject) => {
+      db.query(
+        ListOfReportInsertQuery,
+        ListOfReportInsertValues,
+        (err, result) => {
+          if (err) {
+            console.error("Error in ListOfReportInsertQuery:", err);
+            reject(err);
+          } else {
+            resolve(result);
+          }
+        }
+      );
+    });
+
+    console.log("Record added to the database");
+    return res.json({
+      Status: "Success",
+      Message: "Record added to the database",
+    });
+  } catch (error) {
+    console.error("Error adding the Record:", error);
+    return res.status(500).json({
+      Status: "Error",
+      Message: "Error adding Record to the database",
+    });
+  }
+});
+
 
 //last line sa admin:reports
 

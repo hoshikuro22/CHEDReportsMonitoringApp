@@ -72,7 +72,7 @@ COAReportsAdminTable.propTypes = {
 
 const FileLink = ({ item }) => {
   const [fileUrl, setFileUrl] = useState(
-    `communicationhistoryfiles/${item.file}`
+    `coaauditreportfiles/${item.file}`
   );
 
   useEffect(() => {

@@ -97,20 +97,6 @@ export default function ReportsAdminAddForm({
                 />
               </div>
 
-              <div className="flex flex-col">
-                <label className="mb-1 text-sm font-semibold">Personnel</label>
-                <input
-                  required
-                  type="text"
-                  id="personnelID"
-                  name="personnelID"
-                  placeholder="Enter Personnel ID"
-                  value={formData.personnelID}
-                  onChange={handleChange}
-                  className="px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
-                />
-              </div>
-
               <div className="flex gap-4"></div>
               <div className="col-span-2 ml-auto gap-">
                 <div className="flex">
@@ -159,10 +145,9 @@ ReportsAdminAddForm.propTypes = {
     agencyID: PropTypes.string.isRequired,
     expected_frequency: PropTypes.string.isRequired,
     submission_date: PropTypes.string.isRequired,
-    personnelID: PropTypes.string.isRequired,
   }),
   handleChange: PropTypes.func.isRequired, // Function to handle form input changes
-  handleFileChange: PropTypes.func.isRequired, // Function to handle file input changes
+  handleFileChange: PropTypes.func, // Function to handle file input changes
   handleHideFormClick: PropTypes.func.isRequired, // Function to handle hiding the form
   handleClearFormClick: PropTypes.func.isRequired, // Function to handle clearing the form
   handleAddReportClick: PropTypes.func.isRequired, // Function to handle adding new COA report

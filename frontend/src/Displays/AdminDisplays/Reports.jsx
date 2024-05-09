@@ -4,18 +4,18 @@ import ReportsAdminTable from "./ReportsAdminDisplayComponents/ReportsAdminTable
 import { makeRequest } from "../../../axios";
 import ReportsAdminPagination from "./ReportsAdminDisplayComponents/ReportsAdminPagination";
 import ReportsAdminViewList from "./ReportsAdminDisplayComponents/ReportsAdminViewList";
-// import { makeRequest } from "../../../axios";
+import ReportsAdminAddList from "./ReportsAdminDisplayComponents/ReportsAdminAddList";
+
 
 export default function Reports() {
-  //ADD FORM FUNCTIONS
+  //ADD FORM FUNCTIONS FOR REPORT TABLE
   const [formData, setFormData] = useState({
-    reportID: "Report2024000",
+    reportID: "",
     reportName: "",
     reportType: "",
     agencyID: "",
     expected_frequency: "",
     submission_date: "",
-    personnelID: "",
   });
   console.log("the formData " + JSON.stringify(formData));
 
@@ -35,17 +35,18 @@ export default function Reports() {
     }
   };
 
-  const getMaxReportID = () => {
-    if (reports.length === 0) {
-      return 1;
-    }
-    const maxReportID = Math.max(
-      ...reports.map((report) => parseInt(report.report_ID))
-    );
-    return maxReportID + 1;
-  };
-
-  // pang add data sa database if eclick ang submit
+  // const getMaxReportID = () => {
+  //   if (reports.length === 0) {
+  //     return 1;
+  //   }
+  //   const maxReportID = Math.max(
+  //     ...reports.map((report) => parseInt(report.report_ID))
+  //   );
+  //   return maxReportID + 1;
+  // };
+ 
+  // pang add data sa database if eclick ang submit//
+ 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const userConfirmed = window.confirm(
@@ -59,16 +60,15 @@ export default function Reports() {
     }
 
     try {
-      const reportID = getMaxReportID();
+      // const reportID = getMaxReportID();
 
       const response = await makeRequest.post("/addReport", {
-        reportID: reportID,
+        // reportID: reportID,
         reportName: formData.reportName,
         reportType: formData.reportType,
         agencyID: formData.agencyID,
         expected_frequency: formData.expected_frequency,
         submission_date: formData.submission_date,
-        personnelID: formData.personnelID,
       });
 
       if (response.data.Status === "Success") {
@@ -80,7 +80,6 @@ export default function Reports() {
           agencyID: "",
           expected_frequency: "",
           submission_date: "",
-          personnelID: "",
         });
         fetchReports();
         setShowForm(false);
@@ -113,6 +112,7 @@ export default function Reports() {
 
   const handleHideFormClick = () => {
     setShowForm(false);
+    setReportAddListModalOpen(false); 
   };
 
   const handleAddReportClick = () => {
@@ -131,13 +131,13 @@ export default function Reports() {
       agencyID: "",
       expected_frequency: "",
       submission_date: "",
-      personnelID: "",
     }));
   };
   // for view list / details
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [reportList, setReportList] = useState([]);
-  const [isReportListModalOpen, setReportListModalOpen] = useState(false);
+  const [reportName, setReportName] = useState("");
+  const [isReportViewListModalOpen, setReportViewListModalOpen] = useState(false);
 
   const fetchReportList = async (report_ID) => {
     try {
@@ -146,6 +146,7 @@ export default function Reports() {
       );
       console.log("API Response:", response.data);
       setReportList(response.data);
+      setReportName(response.data[0]?.report_name);
     } catch (error) {
       console.error("Error fetching report list:", error);
     }
@@ -158,10 +159,156 @@ export default function Reports() {
     );
     if (selectedRow) {
       setSelectedRowData(selectedRow);
-      setReportListModalOpen(true);
+      setReportViewListModalOpen(true);
       fetchReportList(report_ID); // Fetch document history when the modal opens
     }
   };
+ //======================!!!======================//
+ //     For ADD FORM FOR Report list / details    //
+ //======================!!!======================//
+    const [isReportAddListModalOpen, setReportAddListModalOpen] = useState(false);
+    
+    const handleAddReportListClick = () => {
+      setReportAddListModalOpen(true);
+      setLORFormData((prevData) => ({
+        ...prevData,
+      }));
+    };
+  //below all functions for the add
+
+
+  const [LORformData, setLORFormData] = useState({
+    // listreportID: "",
+    reportID: "",
+    remarks: "",
+    dateSubmitted: new Date(),
+    file: null,
+    personnelID: "",
+  });
+  console.log(
+    "the LORformData UseState of List of Reports" + JSON.stringify(LORformData)
+  );
+  // const [listOfReports, setListOfReports] = useState([]);
+
+    // to fetch
+    // useEffect(() => {
+    //   fetchCOAAuditReports();
+    // }, []);
+
+    // const fetchCOAAuditReports = async () => {
+    //   try {
+    //     const response = await makeRequest.get("/getCOAAuditReports");
+    //     console.log(response.data); // to check the fetched data
+    //     const sortedCOAAuditReports = response.data.sort();
+    //     setCOAAuditReports(sortedCOAAuditReports);
+    //   } catch (error) {
+    //     console.error("Error:", error);
+    //     alert("An error occurred while fetching COA Audit Reports.");
+    //   }
+    // };
+
+    const handleLORSubmit = async (e) => {
+      e.preventDefault();
+      const userConfirmed = window.confirm(
+        "Are you sure you want to add this record ?"
+      );
+  
+      if (!userConfirmed) {
+        // User clicked 'Cancel' in the confirmation dialog
+        alert("Record not added.");
+        return;
+      }
+      try {
+        const formattedDateSubmitted = LORformData.dateSubmitted.toLocaleDateString();
+        const LORformDataToSend = new FormData();
+  
+        // Append form data including the file
+        LORformDataToSend.append("reportID", LORformData.reportID);
+        LORformDataToSend.append("remarks", LORformData.remarks);
+        LORformDataToSend.append("dateSubmitted", formattedDateSubmitted);
+        LORformDataToSend.append("file", LORformData.file);
+        LORformDataToSend.append("personnelID", LORformData.personnelID);
+  
+        console.log("the formData to send(List of Report) " + JSON.stringify(LORformDataToSend));
+        const response = await makeRequest.post(
+          "/addListOfReport",
+          LORformDataToSend
+        );
+  
+        if (response.data.Status === "Success") {
+          alert("List of Report added successfully!");
+          setLORFormData((prevData) => ({
+            // listreportID: "", 
+            ...prevData,
+            reportID: "",
+            remarks: "",
+            dateSubmitted: new Date(),
+            file: null,
+            personnelID: "",
+          }));
+          fetchReports();
+          setReportAddListModalOpen(false);
+        } else {
+          alert("Error adding List of Report. Please try again.");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        alert("An error occurred while adding the List of Report.");
+      }
+    };
+
+    const handleLORChange = (e) => {
+      const { name, value } = e.target;
+      setLORFormData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    };
+
+    const handleLORFileChange = (e) => {
+      const selectedFile = e.target.files[0];
+
+      if (selectedFile) {
+        const fileSizeLimit = 25000000; // 25MB in bytes
+        // 25000000     25MB in bytes
+        // 10000000     10MB in bytes
+        //  5000000      5MB in bytes
+        //  1000000      1MB in bytes
+
+        if (
+          selectedFile.size <= fileSizeLimit &&
+          selectedFile.type === "application/pdf"
+        ) {
+          setLORFormData((prevData) => ({
+            ...prevData,
+            file: selectedFile,
+          }));
+        } else {
+          // File exceeds the size limit or is not a PDF
+          setLORFormData((prevData) => ({
+            ...prevData,
+            file: null,
+          }));
+
+          if (selectedFile.type !== "application/pdf") {
+            alert("Please select a PDF file.");
+          } else {
+            alert("Please select a file that is no larger than 25MB.");
+          }
+
+          // Clear the input field
+          e.target.value = "";
+        }
+
+        // Move this inside the if block to access selectedFile
+
+        // setEditFileFormData((prevData) => ({
+        //   ...prevData,
+        //   file: selectedFile,
+        // }));
+      }
+    };
+
 
   return (
     <div className="h-auto mt-2 p-1 px-5">
@@ -191,11 +338,24 @@ export default function Reports() {
         />
 
         <ReportsAdminViewList
-          isReportListModalOpen={isReportListModalOpen}
-          setReportListModalOpen={setReportListModalOpen}
+          isReportViewListModalOpen={isReportViewListModalOpen}
+          setReportViewListModalOpen={setReportViewListModalOpen}
           selectedRowData={selectedRowData}
           reportList={reportList}
+          handleAddReportListClick={handleAddReportListClick}
+          reportName={reportName}
         />
+        <ReportsAdminAddList
+        isReportAddListModalOpen={isReportAddListModalOpen}
+        setReportAddListModalOpen={setReportAddListModalOpen}
+        handleHideFormClick={handleHideFormClick}
+        handleClearFormClick={handleClearFormClick}
+        reportName={reportName}
+        handleLORSubmit={handleLORSubmit}
+        handleLORChange={handleLORChange}
+        handleLORFileChange={handleLORFileChange}
+        LORformData={LORformData}
+         />
       </div>
     </div>
   );

@@ -23,7 +23,18 @@ const db = mysql.createConnection({
   user: "root",
   password: "",
   database: "chedreportssystem",
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
+setInterval(() => {
+  db.query('SELECT 1', (err) => {
+    console.log("3 Minutes anti-afk")
+    if (err) {
+      console.error('Keep-alive query error:', err);
+    }
+  });
+}, 180000);
 
 /////////////////////
 const verifyUser = (req, res, next) => {

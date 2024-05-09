@@ -80,7 +80,7 @@ router.get("/getCOAAuditReports", (req, res) => {
 const getNextCOAReportID = async () => {
   return new Promise((resolve, reject) => {
     const getMaxCOAReportIDQuery =
-      "SELECT MAX(report_ID) AS maxCOAReportID FROM coa_audit_reports";
+      "SELECT MAX(coa_report_ID) AS maxCOAReportID FROM coa_audit_reports";
     db.query(getMaxCOAReportIDQuery, (err, result) => {
       if (err) {
         console.error("Error in getMaxCOAReportIDQuery:", err);

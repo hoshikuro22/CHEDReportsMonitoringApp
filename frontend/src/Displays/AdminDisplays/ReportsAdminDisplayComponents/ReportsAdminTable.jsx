@@ -22,7 +22,6 @@ export default function ReportsAdminTable({
           <th className="px-1 py-2">Requesting Agency</th>
           <th className="px-1 py-2">Expected Frequency</th>
           <th className="px-1 py-2">Submission Date</th>
-          <th className="px-1 py-2">Assigned Personnel</th>
           <th className="px-1 py-2">Action</th>
         </tr>
       </thead>
@@ -34,7 +33,6 @@ export default function ReportsAdminTable({
             <td className="border px-3 py-2 text-left">{report.agency_name}</td>
             <td className="border px-3 py-2 text-left">{report.expected_frequency}</td>
             <td className="border px-3 py-2 text-left">{report.submission_date}</td>
-            <td className="border px-3 py-2 text-left">{report.personnel_name}</td>
             <td className="border px-3 py-2 text-left">
             <button
                     title="More Details"

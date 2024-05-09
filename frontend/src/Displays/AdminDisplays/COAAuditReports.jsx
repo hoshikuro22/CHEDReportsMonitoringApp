@@ -40,17 +40,17 @@ export default function COAAuditReports() {
     }
   };
 
-  const getMaxCOAReportID = () => {
-    if (coaAuditReports.length === 0) {
-      return 1;
-    }
-    const maxCOAReportID = Math.max(
-      ...coaAuditReports.map((coaauditreport) =>
-        parseInt(coaauditreport.coa_report_ID)
-      )
-    );
-    return maxCOAReportID + 1;
-  };
+  // const getMaxCOAReportID = () => {
+  //   if (coaAuditReports.length === 0) {
+  //     return 1;
+  //   }
+  //   const maxCOAReportID = Math.max(
+  //     ...coaAuditReports.map((coaauditreport) =>
+  //       parseInt(coaauditreport.coa_report_ID)
+  //     )
+  //   );
+  //   return maxCOAReportID + 1;
+  // };
 
   // pang add data sa database if eclick ang submit
   const handleSubmit = async (e) => {
@@ -65,14 +65,14 @@ export default function COAAuditReports() {
       return;
     }
     try {
-      const coareportID = getMaxCOAReportID();
+      // const coareportID = getMaxCOAReportID();
       const formattedDateCreated = formData.dateCreated.toLocaleDateString();
       const formattedDateReceived = formData.dateReceived.toLocaleDateString();
 
       const formDataToSend = new FormData();
 
       // Append form data including the file
-      formDataToSend.append("coareportID", coareportID);
+      // formDataToSend.append("coareportID", formData.coareportID);
       formDataToSend.append("reference", formData.reference);
       formDataToSend.append("dateCreated", formattedDateCreated);
       formDataToSend.append("details", formData.details);
@@ -80,7 +80,7 @@ export default function COAAuditReports() {
       formDataToSend.append("complianceStatus", formData.complianceStatus);
       formDataToSend.append("file", formData.file);
       formDataToSend.append("remarks", formData.remarks);
-      formDataToSend.append("personnelID", formData.personnelID);
+      formDataToSend.append("personnelID" , formData.personnelID);
 
       console.log("the formData to send " + JSON.stringify(formDataToSend));
       const response = await makeRequest.post(
