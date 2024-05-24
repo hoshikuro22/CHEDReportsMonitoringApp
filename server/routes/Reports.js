@@ -51,14 +51,11 @@ router.get("/getReports", (req, res) => {
   const sql = `
     SELECT
       r.report_ID,
-      r.report_name,
-      rt.type AS report_type,
-      a.agency_name,
+      r.type_of_report,
+      r.agency,
       r.expected_frequency,
       r.submission_date
     FROM reports r
-    JOIN report_type rt ON r.report_type_ID = rt.report_type_ID
-    JOIN agency a ON r.agency_ID = a.agency_ID
     ORDER BY r.report_ID DESC;
   `;
   db.query(sql, (err, data) => {
@@ -76,7 +73,9 @@ router.get("/getReports", (req, res) => {
 // READ or .get with ID
 router.get("/getReports/:id", (req, res) => {
   const reportId = req.params.id;
-  const sql = `
+  
+  // Query to fetch data from list_of_reports
+  const sqlListOfReports = `
     SELECT
       lor.list_report_ID,
       lor.report_ID,
@@ -84,27 +83,45 @@ router.get("/getReports/:id", (req, res) => {
       lor.date_submitted,
       lor.file,
       p.Full_Name AS personnel_name,
-      r.report_name AS report_name
-    FROM list_of_reports lor
+      r.type_of_report AS type_of_report
+    FROM list_of_reports lor  
     JOIN personnel p ON lor.personnel_ID = p.personnel_ID
     JOIN reports r ON lor.report_ID = r.report_ID
     WHERE lor.report_ID = ?;
   `;
-  db.query(sql, [reportId], (err, data) => {
+  
+  // Query to fetch data from reports if no records found in list_of_reports
+  const sqlReports = `
+    SELECT
+      r.report_ID,
+      r.type_of_report AS type_of_report
+    FROM reports r
+    WHERE r.report_ID = ?;
+  `;
+
+  db.query(sqlListOfReports, [reportId], (err, data) => {
     if (err) {
       console.error("Error fetching report:", err);
-      return res
-        .status(500)
-        .json({ Status: "Error", Message: "Failed to fetch report" });
+      return res.status(500).json({ Status: "Error", Message: "Failed to fetch report" });
     }
 
     if (data.length === 0) {
-      return res
-        .status(404)
-        .json({ Status: "Error", Message: "Report not found" });
-    }
+      // If no records found in list_of_reports, fetch from reports table
+      db.query(sqlReports, [reportId], (err, reportData) => {
+        if (err) {
+          console.error("Error fetching report:", err);
+          return res.status(500).json({ Status: "Error", Message: "Failed to fetch report" });
+        }
 
-    return res.status(200).json(data); // Assuming only one report is expected
+        if (reportData.length === 0) {
+          return res.status(404).json({ Status: "Error", Message: "Report not found" });
+        }
+
+        return res.status(200).json(reportData[0]); // Return only the basic report information
+      });
+    } else {
+      return res.status(200).json(data); // Return data from list_of_reports
+    }
   });
 });
 
@@ -134,9 +151,8 @@ const getNextReportID = async () => {
 router.post("/addReport", async (req, res) => {
   const {
     // reportID,
-    reportName,
-    reportType,
-    agencyID,
+    typeOfReport,
+    agency,
     expected_frequency,
     submission_date,
   } = req.body;
@@ -145,12 +161,11 @@ router.post("/addReport", async (req, res) => {
 
     const nextReportID = await getNextReportID();
     const reportInsertQuery =
-      "INSERT INTO reports (report_ID, report_name, report_type_ID, agency_ID, expected_frequency, submission_date) VALUES (?, ?, ?, ?, ?, ?)";
+      "INSERT INTO reports (report_ID, type_of_report, agency, expected_frequency, submission_date) VALUES ( ?, ?, ?, ?, ?)";
     const reportInsertValues = [
       nextReportID,
-      reportName,
-      reportType,
-      agencyID,
+      typeOfReport,
+      agency,
       expected_frequency,
       submission_date,
     ];

@@ -8,7 +8,8 @@ export default function ReportsAdminAddList({
   isReportAddListModalOpen,
   handleHideFormClick,
   handleClearFormClick,
-  reportName,
+  typeOfReport,
+  reportID,
   handleLORSubmit,
   handleLORChange,
   handleLORFileChange,
@@ -21,11 +22,11 @@ export default function ReportsAdminAddList({
           <div className="absolute inset-0 bg-gray-900 opacity-75"></div>
           <div className="bg-white rounded-lg p-8 z-50">
             <h2 className="text-xl font-semibold mb-2">
-              Add Report to {reportName} List
+              Add Report to {typeOfReport} List
             </h2>
             <form onSubmit={handleLORSubmit} className="grid grid-cols-2 gap-4">
              
-            <div className="flex flex-col">
+            <div className="hidden flex-col">
                 <label className="mb-1 text-sm font-semibold">
                   Report ID
                 </label>
@@ -35,12 +36,12 @@ export default function ReportsAdminAddList({
                   id="reportID"
                   name="reportID"
                   placeholder="Enter Report ID"
-                  value={LORformData.reportID}
+                  value={LORformData.reportID || reportID}
                   onChange={handleLORChange}
                   className="px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
                 />
               </div>
-              <div className="flex flex-col">
+              <div className="hidden flex-col">
                 <label className="mb-1 text-sm font-semibold">
                   Personnel ID
                 </label>
@@ -139,7 +140,8 @@ ReportsAdminAddList.propTypes = {
   isReportAddListModalOpen: PropTypes.bool,
   handleHideFormClick: PropTypes.func,
   handleClearFormClick: PropTypes.func,
-  reportName: PropTypes.string,
+  typeOfReport: PropTypes.string,
+  reportID: PropTypes.number,
   handleLORChange: PropTypes.func.isRequired,
   handleLORFileChange: PropTypes.func.isRequired,
   LORformData: PropTypes.shape({

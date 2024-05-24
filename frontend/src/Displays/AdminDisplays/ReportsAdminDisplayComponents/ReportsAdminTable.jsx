@@ -17,8 +17,7 @@ export default function ReportsAdminTable({
     <table className="min-w-full leading-normal">
       <thead className="bg-gray-200 sticky top-0">
         <tr className="bg-gray-400 ">
-          <th className="px-1 py-2">Report Name</th>
-          <th className="px-1 py-2">Type</th>
+          <th className="px-1 py-2">Type Of Report</th>
           <th className="px-1 py-2">Requesting Agency</th>
           <th className="px-1 py-2">Expected Frequency</th>
           <th className="px-1 py-2">Submission Date</th>
@@ -28,9 +27,8 @@ export default function ReportsAdminTable({
       <tbody>
         {currentItems.map(report => (
           <tr key={report.report_ID} className="hover:bg-gray-100">
-            <td className="border px-3 py-2 text-left">{report.report_name}</td>
-            <td className="border px-3 py-2 text-left">{report.report_type}</td>
-            <td className="border px-3 py-2 text-left">{report.agency_name}</td>
+            <td className="border px-3 py-2 text-left">{report.type_of_report}</td>
+            <td className="border px-3 py-2 text-left">{report.agency}</td>
             <td className="border px-3 py-2 text-left">{report.expected_frequency}</td>
             <td className="border px-3 py-2 text-left">{report.submission_date}</td>
             <td className="border px-3 py-2 text-left">

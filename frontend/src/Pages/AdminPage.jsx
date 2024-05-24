@@ -21,7 +21,8 @@ export default function AdminPage() {
 
       .then((res) => {
         console.log("This is the status: " + res.data.Status);
-        console.log("This is the User_ID " + res.data.User_ID);
+        console.log("This is the personnel full name: " + res.data.Full_Name);
+        console.log("This is the personnel_ID: " + res.data.personnel_ID);
         if (res.data.Status === "Logged in") {
           setAuth(true);
         } else {
@@ -46,18 +47,6 @@ export default function AdminPage() {
 
             </Routes>
 
-            {/* <Routes>
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/adhome" element={<AdminHome />} />
-              <Route path="/chedclients" element={<ChedClients />} />
-              <Route path="/communications" element={<Communications />} />
-              <Route path="/documenttypes" element={<DocumentTypes />} />
-              <Route path="/clienttypes" element={<ClientTypes />} />
-              <Route path="/activitylog" element={<ActivityLog />} />
-              <Route path="/reports" element={<Reports />} />
-              <Route path="/listofpersonnel" element={<ListOfPersonnels />} />
-              <Route path="/addaccount" element={<AddAccount />} />
-            </Routes> */}
           </div>
         </div>
       </div>

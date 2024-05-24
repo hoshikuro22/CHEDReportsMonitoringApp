@@ -47,11 +47,8 @@ const verifyUser = (req, res, next) => {
         return res.json({ Message: "Authentication Error" });
       } else {
         // console.log(decoded); // Check the structure of 'decoded' here
-        req.First_Name = decoded.user.First_Name;
-        req.Last_Name = decoded.user.Last_Name;
-        // req.User_type_ID = decoded.user.User_type_ID;
-        req.User_ID = decoded.user.User_ID;
-        req.Email = decoded.user.Email;
+        req.Full_Name = decoded.user.Full_Name;
+        req.personnel_ID = decoded.user.personnel_ID;
         req.Password = decoded.user.Password;
         req.Username = decoded.user.Username;
         // req.Contact_Number = decoded.user.Contact_Number;
@@ -64,19 +61,15 @@ const verifyUser = (req, res, next) => {
 app.get("/", verifyUser, (req, res) => {
     return res.json({
       Status: "Logged in",
-      First_Name: req.First_Name,
-      Last_Name: req.Last_Name,
-      User_type_ID: req.User_type_ID,
-      User_ID: req.User_ID,
-      Email: req.Email,
+      Full_Name: req.Full_Name,
+      personnel_ID: req.personnel_ID,
       Password: req.Password,
       Username: req.Username,
-      Contact_Number: req.Contact_Number,
     });
   });
 
 app.post("/login", (req, res) => {
-    const sql = "SELECT * FROM user WHERE Username = ? ";
+    const sql = "SELECT * FROM personnel WHERE Username = ? ";
     db.query(sql, [req.body.Username], (err, data) => {
       if (err) return res.json({ Error: "Server Side Error" });
       if (data.length > 0) {

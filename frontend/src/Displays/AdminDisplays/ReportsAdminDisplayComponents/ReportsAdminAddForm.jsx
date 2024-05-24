@@ -21,45 +21,31 @@ export default function ReportsAdminAddForm({
             <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
               <div className="flex flex-col">
                 <label className="mb-1 text-sm font-semibold">
-                  Report Name
+                 Type of Report
                 </label>
                 <input
                   required
                   type="text"
-                  id="reportName"
-                  name="reportName"
-                  placeholder="Enter Report Name"
-                  value={formData.reportName}
+                  id="typeOfReport"
+                  name="typeOfReport"
+                  placeholder="Enter Type of Report"
+                  value={formData.typeOfReport  }
                   onChange={handleChange}
                   className="px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
                 />
               </div>
 
-              <div className="flex flex-col">
-                <label className="mb-1 text-sm font-semibold">
-                  Report Type
-                </label>
-                <input
-                  required
-                  type="text"
-                  id="reportType"
-                  name="reportType"
-                  placeholder="Enter Report Type"
-                  value={formData.reportType}
-                  onChange={handleChange}
-                  className="px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
-                />
-              </div>
+        
 
               <div className="flex flex-col">
                 <label className="mb-1 text-sm font-semibold">Agency</label>
                 <input
                   required
                   type="text"
-                  id="agencyID"
-                  name="agencyID"
-                  placeholder="Enter Agency ID"
-                  value={formData.agencyID}
+                  id="agency"
+                  name="agency" 
+                  placeholder="Enter Agency "
+                  value={formData.agency}
                   onChange={handleChange}
                   className="px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
                 />
@@ -140,9 +126,8 @@ ReportsAdminAddForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired, // Function to handle form submission
   showForm: PropTypes.bool.isRequired, // Boolean indicating whether to show the form or not
   formData: PropTypes.shape({
-    reportName: PropTypes.string.isRequired,
-    reportType: PropTypes.string.isRequired,
-    agencyID: PropTypes.string.isRequired,
+    typeOfReport: PropTypes.string.isRequired,
+    agency: PropTypes.string.isRequired,
     expected_frequency: PropTypes.string.isRequired,
     submission_date: PropTypes.string.isRequired,
   }),

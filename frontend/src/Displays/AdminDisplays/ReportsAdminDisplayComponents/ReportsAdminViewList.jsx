@@ -8,7 +8,8 @@ export default function ReportsAdminViewList({
   setReportViewListModalOpen,
   reportList,
   handleAddReportListClick,
-  reportName,
+  typeOfReport,
+  reportID,
  
 }) {
   return (
@@ -18,7 +19,7 @@ export default function ReportsAdminViewList({
           <div className="absolute inset-0 bg-gray-900 opacity-75"></div>
           <div className="bg-white rounded-lg p-8 z-50">
             <h2 className="text-xl font-semibold mb-4 font-mono">
-              List of  {reportName} Reports
+              List of  {typeOfReport} Reports
             </h2>
 
             <table className="w-full">
@@ -62,7 +63,7 @@ export default function ReportsAdminViewList({
             <div className="flex justify-between">
               <button 
               className="flex mt-4 px-4 py-2 text-white bg-sky-950 rounded-lg hover:bg-sky-700 transition duration-300"
-              onClick={handleAddReportListClick}
+              onClick={() => handleAddReportListClick(reportID)}
               >
                 Add
               </button>
@@ -87,7 +88,8 @@ ReportsAdminViewList.propTypes = {
   setReportViewListModalOpen: PropTypes.func,
   reportList: PropTypes.array,
   handleAddReportListClick: PropTypes.func,
-  reportName: PropTypes.string,
+  typeOfReport: PropTypes.string,
+  reportID: PropTypes.number,
 
 };
 
@@ -101,7 +103,7 @@ const FileLink = ({ item }) => {
       try {
         const response = await makeRequest.get(fileUrl);
 
-        if (!response.ok) {
+        if ( response.ok) {
           setFileUrl(`listofreportfiles/${item.file}`);
         }
       } catch (error) {

@@ -66,7 +66,7 @@ export default function COAReportsAdminTable({
 }
 
 COAReportsAdminTable.propTypes = {
-  currentItems: PropTypes.array.isRequired,
+  currentItems: PropTypes.array,
 
 };
 
@@ -80,7 +80,7 @@ const FileLink = ({ item }) => {
       try {
         const response = await makeRequest.get(fileUrl);
 
-        if (!response.ok) {
+        if (response.ok) {
           setFileUrl(`coaauditreportfiles/${item.file}`);
         }
       } catch (error) {
