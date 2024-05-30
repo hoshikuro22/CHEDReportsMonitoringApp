@@ -21,14 +21,17 @@ export default function LandingPage() {
       .post("/login", values)
       .then((res) => {
         console.log(res);
-        navigate("/admin/dashboard");
+        if (res.data.personnel_type_ID === 0) {
+          navigate("/admin/dashboard");
+        } else if (res.data.personnel_type_ID >= 1 && res.data.personnel_type_ID <= 7) {
+          navigate("/normal/ndashboard");
+        } else {
+          // alert(res.data.Error);
+          alert("Password or User not matched, please try again.");
+        }
       })
-      .catch((err) => {
-        console.log(err);
-        alert("Error occurred while logging in. Please try again.");
-      });
+      .catch((err) => console.log(err));
   };
-
   // auth
   const [auth, setAuth] = useState(false);
   axios.defaults.withCredentials = true;

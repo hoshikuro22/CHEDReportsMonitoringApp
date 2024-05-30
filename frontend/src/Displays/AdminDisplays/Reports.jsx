@@ -101,7 +101,7 @@ export default function Reports() {
 
   // for pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 1000;
+  const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = reports.slice(indexOfFirstItem, indexOfLastItem);
@@ -360,8 +360,8 @@ export default function Reports() {
         <ReportsAdminPagination
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
-          reports={reports}
           itemsPerPage={itemsPerPage}
+          totalItems={reports.length}
         />
 
         <ReportsAdminViewList

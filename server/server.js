@@ -49,6 +49,7 @@ const verifyUser = (req, res, next) => {
         // console.log(decoded); // Check the structure of 'decoded' here
         req.Full_Name = decoded.user.Full_Name;
         req.personnel_ID = decoded.user.personnel_ID;
+        req.personnel_type_ID = decoded.user.personnel_type_ID;
         req.Password = decoded.user.Password;
         req.Username = decoded.user.Username;
         // req.Contact_Number = decoded.user.Contact_Number;
@@ -63,6 +64,7 @@ app.get("/", verifyUser, (req, res) => {
       Status: "Logged in",
       Full_Name: req.Full_Name,
       personnel_ID: req.personnel_ID,
+      personnel_type_ID: req.personnel_type_ID,
       Password: req.Password,
       Username: req.Username,
     });
@@ -91,7 +93,7 @@ app.post("/login", (req, res) => {
                 })
                 .json({
                   Status: "Success",
-                  userType: user.User_type_ID,
+                  personnel_type_ID: user.personnel_type_ID,
                   First_Name: user.First_Name,
                   Last_Name: user.Last_Name,
                   Username: user.Username,

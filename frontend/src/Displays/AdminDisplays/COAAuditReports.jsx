@@ -170,7 +170,7 @@ export default function COAAuditReports() {
 
   // for pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 1000;
+  const itemsPerPage = 10;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = coaAuditReports.slice(indexOfFirstItem, indexOfLastItem);
@@ -200,6 +200,19 @@ export default function COAAuditReports() {
       personnelID: "",
     }));
   };
+  useEffect(() => {
+    makeRequest
+      .get("/")
+      .then((res) => {
+        const personnelID = res.data.personnel_ID;
+        console.log("COA REPORTS -This is the personnel_ID: " + personnelID);
+        // Set the personnelID in the state
+        setFormData((prevData) => ({ ...prevData, personnelID }));
+      })
+      .catch((error) => {
+        console.error("Error fetching User_ID:", error);
+      });
+  }, []);
 
   return (
     <div className="h-auto mt-2 p-1 px-5">
@@ -223,8 +236,8 @@ export default function COAAuditReports() {
         <COAReportsAdminPagination
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
-          coaAuditReports={coaAuditReports}
           itemsPerPage={itemsPerPage}
+          totalItems={coaAuditReports.length}
         />
       </div>
     </div>

@@ -121,7 +121,7 @@
                 <div className="flex flex-col">
                   <label className="mb-1 text-sm font-semibold">Remarks</label>
                   <input
-                    required
+                    
                     type="text"
                     id="remarks"
                     name="remarks"
@@ -132,7 +132,7 @@
                   />
                 </div>
 
-                <div className="flex flex-col">
+                <div className="hidden flex-col">
                   <label className="mb-1 text-sm font-semibold">Personnel</label>
                   <input
                     required

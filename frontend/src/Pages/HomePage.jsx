@@ -4,11 +4,12 @@ import LandingPage from "./LandingPage";
 // import NormalPage from "./NormalPage";
 import AdminPage from "./AdminPage";
 import { makeRequest } from "../../axios";
+import NormalPage from "./NormalPage";
 
 export default function HomePage() {
 
     const [auth, setAuth] = useState(false)
-    // const [kungAdmin, setKungAdmin] = useState(false)
+    const [kungAdmin, setKungAdmin] = useState(false)
     axios.defaults.withCredentials = true;
 
     useEffect(() => {
@@ -24,32 +25,32 @@ export default function HomePage() {
           }})},[])
 
           
-    // useEffect(() => {
-    //   makeRequest.get('/')
+    useEffect(() => {
+      makeRequest.get('/')
       
-    //     .then(res => {
-    //       console.log("This is the user type: "+ res.data.User_type_ID)
-    //       if (res.data.User_type_ID === 0) {
-    //         setKungAdmin(true);
+        .then(res => {
+          console.log("This is the personnel type: "+ res.data.personnel_type_ID)
+          if (res.data.personnel_type_ID === 0) {
+            setKungAdmin(true);
         
-    //       } else {
-    //         setKungAdmin(false);
-    //       }})},[])
+          } else {
+            setKungAdmin(false);
+          }})},[])
 
 
   return (
     <div>
    {auth ?
     <div>
- {/* {kungAdmin ? */}
+ {kungAdmin ?
  <div>
     <AdminPage />
  </div>
- {/* : */}
- {/* <div> */}
-    {/* <NormalPage /> */}
- {/* </div> */}
- {/* } */}
+  : 
+  <div> 
+     <NormalPage />
+ </div> 
+  } 
   </div>
   :
 <div>

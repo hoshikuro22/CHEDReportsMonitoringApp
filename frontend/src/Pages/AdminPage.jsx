@@ -23,6 +23,7 @@ export default function AdminPage() {
         console.log("This is the status: " + res.data.Status);
         console.log("This is the personnel full name: " + res.data.Full_Name);
         console.log("This is the personnel_ID: " + res.data.personnel_ID);
+        console.log("This is the personnel_type_ID: " + res.data.personnel_type_ID);
         if (res.data.Status === "Logged in") {
           setAuth(true);
         } else {
@@ -32,39 +33,66 @@ export default function AdminPage() {
       });
   }, []);
 
+  const [ifAdmin, setIfAdmin] = useState(false);
+  useEffect(() => {
+    makeRequest
+      .get("/")
+
+      .then((res) => {
+        console.log("This is the personnel type: " + res.data.personne_type_ID);
+        if (res.data.personnel_type_ID === 0) {
+          setIfAdmin(true);
+        } else {
+          setIfAdmin(false);
+        }
+      });
+  }, []);
+
+
   return (
     <div className="bg-gray-100">
-    <AdminHeader />
-    {auth ? (
-      <div className="h-auto min-h-screen ">
-        <div className="h-auto">
-          {/* <AdminSidebar /> */}
-          <div className="h-auto ">
+      <AdminHeader />
+      {auth ? (
+        <div className="h-auto min-h-screen ">
+          <div className="h-auto">
+            {ifAdmin ? (
+              <div className="h-auto ">
                 <Routes>
-              <Route path="/reports" element={<Reports />} />
-              <Route path="/coaauditreports" element={<COAAuditReports />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-
-            </Routes>
-
+                  <Route path="/reports" element={<Reports />} />
+                  <Route path="/coaauditreports" element={<COAAuditReports />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                </Routes>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
+                <div className="bg-white p-8 rounded shadow-lg text-center">
+                  <p className="text-lg my-3">Only admin can access here </p>
+                  <Link
+                    to="/login"
+                    className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition duration-300 ease-in-out"
+                  >
+                    Go back
+                  </Link>
+                </div>
+              </div>
+            )}
           </div>
         </div>
-      </div>
-    ) : (
-      <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
-        <div className="bg-white p-8 rounded shadow-lg text-center">
-          <h3 className="text-red-500 text-2xl font-bold mb-4">{message}</h3>
-          <p className="text-lg my-3">Log in now to access</p>
-          <Link
-            to="/login"
-            className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition duration-300 ease-in-out"
-          >
-            Login
-          </Link>
+      ) : (
+        <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
+          <div className="bg-white p-8 rounded shadow-lg text-center">
+            <h3 className="text-red-500 text-2xl font-bold mb-4">{message}</h3>
+            <p className="text-lg my-3">Log in now to access</p>
+            <Link
+              to="/login"
+              className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition duration-300 ease-in-out"
+            >
+              Login
+            </Link>
+          </div>
         </div>
-      </div>
-    )}
-   <AdminFooter />
-  </div>
-);
+      )}
+      <AdminFooter />
+    </div>
+  );
 }

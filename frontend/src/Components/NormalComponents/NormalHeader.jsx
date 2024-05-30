@@ -4,7 +4,7 @@ import { BiLogOut } from "react-icons/bi";
 import { useLocation } from "react-router-dom";
 import CHED10LOGOPicture from "../../assets/ched10.png";
 
-export default function AdminHeader() {
+export default function NormalHeader() {
   const handleLogout = () => {
     makeRequest
       .get("/logout")
@@ -23,7 +23,7 @@ export default function AdminHeader() {
   return (
     <div className="bg-sky-950 top-0 right-0 items-center w-screen flex justify-between px-8">
       <div className="flex items-center py-4 gap-4">
-        <a href="/admin/dashboard">
+        <a href="/normal/dashboard">
           <img
             className="h-[50px] w-[50px] "
             src={CHED10LOGOPicture}
@@ -36,9 +36,9 @@ export default function AdminHeader() {
       </div>
       <div className="flex">
         <a
-          href="/admin/reports"
+          href="/normal/nreports"
           className={`text-white font-semibold py-1 px-2 rounded gap-3 ml-auto mr-10 ${
-            location.pathname === "/admin/reports"
+            location.pathname === "/normal/reports"
               ? "bg-gray-500 hover:bg-gray-700 font-bold"
               : "hover:bg-gray-700"
           }`}
@@ -47,9 +47,9 @@ export default function AdminHeader() {
         </a>
 
         <a
-          href="/admin/coaauditreports"
+          href="/normal/ncoaauditreports"
           className={`text-white font-semibold py-1 px-2 rounded gap-3 mr-10 ${
-            location.pathname === "/admin/coaauditreports"
+            location.pathname === "/normal/coaauditreports"
               ? "bg-gray-500 hover:bg-gray-700 font-bold"
               : "hover:bg-gray-700"
           }`}
@@ -58,9 +58,9 @@ export default function AdminHeader() {
         </a>
 
         <a
-          href="/admin/dashboard"
+          href="/normal/ndashboard"
           className={`text-white font-semibold py-1 px-2 rounded gap-3 mr-10 ${
-            location.pathname === "/admin/dashboard"
+            location.pathname === "/normal/dashboard"
               ? "bg-gray-500 hover:bg-gray-700 font-bold"
               : "hover:bg-gray-700"
           }`}

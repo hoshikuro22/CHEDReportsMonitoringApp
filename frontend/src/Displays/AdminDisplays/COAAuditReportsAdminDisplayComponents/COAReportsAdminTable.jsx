@@ -21,7 +21,7 @@ export default function COAReportsAdminTable({
             <th className="px-1 py-2">Compliance Status</th>
             <th className="px-1 py-2">Remarks</th>
             <th className="px-1 py-2">Personnel</th>
-            <th className="px-1 py-2">Action</th>
+            {/* <th className="px-1 py-2">Action</th> */}
           </tr>
         </thead>
         <tbody>
@@ -54,9 +54,9 @@ export default function COAReportsAdminTable({
               <td className="border px-3 py-2 text-left">
                 {coaauditreport.personnel_name}
               </td>
-              <td>
+              {/* <td>
                 |ACTIONS|
-              </td>
+              </td> */}
             </tr>
           ))}
         </tbody>
