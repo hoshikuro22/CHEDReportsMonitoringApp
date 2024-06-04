@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { makeRequest } from "../../../../axios";
 import { useEffect, useState } from "react";
 
-export default function ReportsAdminViewList({
+export default function NReportsStaffViewList({
   isReportViewListModalOpen,
   selectedRowData,
   setReportViewListModalOpen,
@@ -82,7 +82,7 @@ export default function ReportsAdminViewList({
   );
 }
 
-ReportsAdminViewList.propTypes = {
+NReportsStaffViewList.propTypes = {
   isReportViewListModalOpen: PropTypes.bool,
   selectedRowData: PropTypes.object,
   setReportViewListModalOpen: PropTypes.func,
