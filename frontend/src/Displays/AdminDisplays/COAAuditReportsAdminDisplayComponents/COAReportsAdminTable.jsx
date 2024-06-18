@@ -1,11 +1,25 @@
 import { useState, useEffect } from "react";
 import { makeRequest } from "../../../../axios";
 import PropTypes from "prop-types";
+import { RiFileEditFill  } from "react-icons/ri";
+import { PiListMagnifyingGlass } from "react-icons/pi";
 
 export default function COAReportsAdminTable({
   currentItems,
+  handleEditFileClick,
+  handleInfoClick,
  
 }) {
+
+  // to format date
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) {
+      return "None";
+    }
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    return date.toLocaleString('en-US', options);
+  };
 
 
   return (
@@ -21,14 +35,15 @@ export default function COAReportsAdminTable({
             <th className="px-1 py-2">Compliance Status</th>
             <th className="px-1 py-2">Remarks</th>
             <th className="px-1 py-2">Personnel</th>
-            {/* <th className="px-1 py-2">Action</th> */}
+            <th className="px-1 py-2">Date Actioned</th>
+            <th className="px-1 py-2">Action</th>
           </tr>
         </thead>
         <tbody>
           {currentItems.map((coaauditreport) => (
             <tr
               className="hover:bg-gray-100"
-              key={coaauditreport.coa_report_ID}
+              key={coaauditreport.coa_report_id}
             >
               <td className="border px-3 py-2 text-left">
                 {coaauditreport.reference}
@@ -54,9 +69,27 @@ export default function COAReportsAdminTable({
               <td className="border px-3 py-2 text-left">
                 {coaauditreport.personnel_name}
               </td>
-              {/* <td>
-                |ACTIONS|
-              </td> */}
+              <td className="border px-3 py-2 text-left">
+                {formatDate(coaauditreport.date_actioned)}
+              </td>
+              <td className="border flex items-center">
+              <button
+                    title="Modify File"
+                    className="text-green-500 hover:text-green-800 font-bold"
+                    onClick={() => handleEditFileClick(coaauditreport.coa_report_id)}
+                  >
+                    <RiFileEditFill size="35px" />
+                    <div className="absolute bg-gray-800 text-white p-2 rounded shadow-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-300"></div>
+                  </button>
+                  <button
+                    title="More Details"
+                    className="text-gray-500 hover:text-gray-800 font-bold"
+                    onClick={() => handleInfoClick(coaauditreport.coa_report_id)}
+                  >
+                    <PiListMagnifyingGlass size="35px" />
+                    <div className="absolute bg-gray-800 text-white p-2 rounded shadow-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition duration-300"></div>
+                  </button>
+              </td> 
             </tr>
           ))}
         </tbody>
@@ -67,6 +100,8 @@ export default function COAReportsAdminTable({
 
 COAReportsAdminTable.propTypes = {
   currentItems: PropTypes.array,
+  handleEditFileClick: PropTypes.func,
+  handleInfoClick: PropTypes.func,
 
 };
 
@@ -85,12 +120,12 @@ const FileLink = ({ item }) => {
         }
       } catch (error) {
         console.error("Error fetching file:", error);
-        setFileUrl(`coaauditreportfiles/${item.file}`);
+        setFileUrl(`coaauditreporthistoryfiles/${item.file}`);
       }
     };
 
     checkFile();
-  }, [item.file, fileUrl]);
+  }, [item.file, fileUrl]); 
 
   // Truncate the file name to 25 characters
   const truncatedFileName =

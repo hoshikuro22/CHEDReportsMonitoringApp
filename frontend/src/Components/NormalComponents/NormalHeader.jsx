@@ -5,6 +5,7 @@ import { useLocation } from "react-router-dom";
 import CHED10LOGOPicture from "../../assets/ched10.png";
 import { useEffect, useState } from "react";
 import {BsFillPersonFill} from "react-icons/bs";
+import { HiArrowLeftCircle, HiArrowRightCircle } from "react-icons/hi2";
 
 export default function NormalHeader() {
   const handleLogout = () => {
@@ -20,6 +21,8 @@ export default function NormalHeader() {
       .catch((err) => console.log(err));
   };
   const [FullName, setFullName] = useState("");
+  const [Position, setPosition] = useState("");
+  const [linksVisible, setLinksVisible] = useState(false);
   useEffect(() => {
     makeRequest
       .get("/")
@@ -27,11 +30,16 @@ export default function NormalHeader() {
       .then((res) => {
         if (res.data.Status === "Logged in") {
           setFullName(res.data.Full_Name);
+          setPosition(res.data.Position)
         }
       });
   }, []);
 
   const location = useLocation();
+  const toggleLinksVisibility = () => {
+    setLinksVisible(!linksVisible);
+  };
+
 
   return (
     <div className="bg-sky-950 top-0 right-0 items-center w-screen flex justify-between px-8">
@@ -47,49 +55,68 @@ export default function NormalHeader() {
           CHED 10 REPORTS MONITORING SYSTEM
         </h1>
       </div>
-      <div className="flex">
-        <a
-          href="/normal/nreports"
-          className={`text-white font-semibold py-1 px-2 rounded gap-3 ml-auto mr-10 ${
-            location.pathname === "/normal/nreports"
-              ? "bg-gray-500 hover:bg-gray-700 font-bold"
-              : "hover:bg-gray-700"
-          }`}
-        >
-          Reports
-        </a>
+      <div className="flex items-center">
+      <div className={`flex transition-transform ${linksVisible ? 'translate-x-0' : '-translate-x-full'}`}>
+       
+       {linksVisible && (
+         <>
+           <a
+             href="/normal/nreports"
+             className={`text-white font-semibold py-1 px-2 rounded gap-3 ml-auto mr-10 ${
+               location.pathname === "/normal/nreports"
+                 ? "bg-gray-500 hover:bg-gray-700 font-bold"
+                 : "hover:bg-gray-700"
+             }`}
+           >
+             Other Reports
+           </a>
 
-        <a
-          href="/normal/ncoaauditreports"
-          className={`text-white font-semibold py-1 px-2 rounded gap-3 mr-10 ${
-            location.pathname === "/normal/ncoaauditreports"
-              ? "bg-gray-500 hover:bg-gray-700 font-bold"
-              : "hover:bg-gray-700"
-          }`}
-        >
-          COA Audit Reports
-        </a>
+           <a
+             href="/normal/ncoaauditreports"
+             className={`text-white font-semibold py-1 px-2 rounded gap-3 mr-10 ${
+               location.pathname === "/normal/ncoaauditreports"
+                 ? "bg-gray-500 hover:bg-gray-700 font-bold"
+                 : "hover:bg-gray-700"
+             }`}
+           >
+             COA Audit Reports
+           </a>
 
-        <a
-          href="/normal/ndashboard"
-          className={`text-white font-semibold py-1 px-2 rounded gap-3 mr-10 ${
-            location.pathname === "/normal/ndashboard"
-              ? "bg-gray-500 hover:bg-gray-700 font-bold"
-              : "hover:bg-gray-700"
-          }`}
-        >
-          Dashboard
-        </a>
+           <a
+             href="/normal/ndashboard"
+             className={`text-white font-semibold py-1 px-2 rounded gap-3 mr-10 ${
+               location.pathname === "/normal/ndashboard"
+                 ? "bg-gray-500 hover:bg-gray-700 font-bold"
+                 : "hover:bg-gray-700"
+             }`}
+           >
+             Dashboard
+           </a>
 
+          
+         </>
+       )}
+          <button
+         className="text-white font-semibold hover:bg-gray-700  "
+         onClick={toggleLinksVisibility}
+       >
+         {linksVisible ? <div className="flex items-center"> Hide Links<HiArrowLeftCircle size="35px" /> </div> : <div className="flex items-center"> Show Links<HiArrowRightCircle size="35px" /> </div> }
+       </button>
+     </div>          
         <div className="flex items-center gap-5">
-        <a className="text-white flex gap-2 font-semibold items-center">
+        <div className="flex flex-col items-center">
+        <a className="text-white underline flex gap-2 font-bold items-center">
           <BsFillPersonFill size="20" />
-            {FullName}
+          _{FullName}_
           </a>
+          <a className="text-white font-semibold">
+          {Position}
+          </a>
+          </div>
           <Link
             to="/login"
             onClick={handleLogout}
-            className="px-2 rounded hover:bg-gray-700 flex gap-3"
+            className="text-white px-2 rounded hover:bg-gray-700 flex gap-3"
           >
             <BiLogOut size="30px" />
           </Link>

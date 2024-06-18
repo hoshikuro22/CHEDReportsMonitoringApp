@@ -71,7 +71,7 @@
                   />
                 </div>
 
-                <div className="flex flex-col">
+                <div className="hidden flex-col">
                   <label className="mb-1 text-sm font-semibold">
                     Date Received <strong>(Month/Day/Year)</strong>
                   </label>
@@ -194,9 +194,9 @@
       details: PropTypes.string.isRequired, // Details of the report
       dateReceived: PropTypes.instanceOf(Date).isRequired, // Date the report was received
       complianceStatus: PropTypes.string.isRequired, // Compliance status of the report
-      file: PropTypes.object.isRequired, // File object representing the report file (PDF)
+      file: PropTypes.object,// File object representing the report file (PDF)
       remarks: PropTypes.string.isRequired, // Remarks for the report
-      personnelID: PropTypes.string.isRequired, // Personnel ID associated with the report
+      personnelID: PropTypes.number.isRequired, // Personnel ID associated with the report
     }), // Object containing form data
     handleChange: PropTypes.func.isRequired, // Function to handle form input changes
     handleFileChange: PropTypes.func.isRequired, // Function to handle file input changes

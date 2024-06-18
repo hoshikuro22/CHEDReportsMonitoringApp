@@ -5,7 +5,8 @@ import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import bcrypt from "bcrypt";
 import reportsRoutes from "./routes/Reports.js";
-import coaauditreportsRoutes from "./routes/CoaAuditReports.js"
+import coaauditreportsRoutes from "./routes/CoaAuditReports.js";
+import activitylogRoutes from "./routes/ActivityLog.js";
 
 const app = express();
 app.use(express.json());
@@ -48,6 +49,7 @@ const verifyUser = (req, res, next) => {
       } else {
         // console.log(decoded); // Check the structure of 'decoded' here
         req.Full_Name = decoded.user.Full_Name;
+        req.Position = decoded.user.Position;
         req.personnel_ID = decoded.user.personnel_ID;
         req.personnel_type_ID = decoded.user.personnel_type_ID;
         req.Password = decoded.user.Password;
@@ -63,6 +65,7 @@ app.get("/", verifyUser, (req, res) => {
     return res.json({
       Status: "Logged in",
       Full_Name: req.Full_Name,
+      Position: req.Position,
       personnel_ID: req.personnel_ID,
       personnel_type_ID: req.personnel_type_ID,
       Password: req.Password,
@@ -111,6 +114,7 @@ app.post("/login", (req, res) => {
 
   app.use("/", reportsRoutes);
   app.use("/", coaauditreportsRoutes);
+  app.use("/", activitylogRoutes);
 
 
 

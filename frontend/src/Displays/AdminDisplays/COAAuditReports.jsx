@@ -4,6 +4,8 @@ import COAReportsAddForm from "./COAAuditReportsAdminDisplayComponents/COAReport
 import COAReportsAdminTable from "./COAAuditReportsAdminDisplayComponents/COAReportsAdminTable";
 import { makeRequest } from "../../../axios";
 import COAReportsAdminPagination from "./COAAuditReportsAdminDisplayComponents/COAReportsAdminPagination";
+import COAReportsEditForm from "./COAAuditReportsAdminDisplayComponents/COAReportsEditForm";
+import COAReportsAdminMoreDetails from "./COAAuditReportsAdminDisplayComponents/COAReportsAdminMoreDetails";
 
 export default function COAAuditReports() {
   //ADD FORM FUNCTIONS
@@ -22,6 +24,20 @@ export default function COAAuditReports() {
   console.log(
     "the formData UseState of COA Audit Reports" + JSON.stringify(formData)
   );
+// to fetch the current personnel's ID
+  useEffect(() => {
+    makeRequest
+      .get("/")
+      .then((res) => {
+        const personnelID = res.data.personnel_ID;
+        console.log("COA REPORTS -This is the current personnel_ID: " + personnelID);
+        // Set the personnelID in the state
+        setFormData((prevData) => ({ ...prevData, personnelID }));
+      })
+      .catch((error) => {
+        console.error("Error fetching personnel_ID:", error);
+      });
+  }, []);
 
   // to fetch
   useEffect(() => {
@@ -46,7 +62,7 @@ export default function COAAuditReports() {
   //   }
   //   const maxCOAReportID = Math.max(
   //     ...coaAuditReports.map((coaauditreport) =>
-  //       parseInt(coaauditreport.coa_report_ID)
+  //       parseInt(coaauditreport.coa_report_id)
   //     )
   //   );
   //   return maxCOAReportID + 1;
@@ -80,7 +96,7 @@ export default function COAAuditReports() {
       formDataToSend.append("complianceStatus", formData.complianceStatus);
       formDataToSend.append("file", formData.file);
       formDataToSend.append("remarks", formData.remarks);
-      formDataToSend.append("personnelID" , formData.personnelID);
+      formDataToSend.append("personnelID", formData.personnelID);
 
       console.log("the formData to send " + JSON.stringify(formDataToSend));
       const response = await makeRequest.post(
@@ -159,10 +175,10 @@ export default function COAAuditReports() {
 
       // Move this inside the if block to access selectedFile
 
-      // setEditFileFormData((prevData) => ({
-      //   ...prevData,
-      //   file: selectedFile,
-      // }));
+      setEditFileFormData((prevData) => ({
+        ...prevData,
+        file: selectedFile,
+      }));
     }
   };
   const [coaAuditReports, setCOAAuditReports] = useState([]);
@@ -200,19 +216,124 @@ export default function COAAuditReports() {
       personnelID: "",
     }));
   };
-  useEffect(() => {
-    makeRequest
-      .get("/")
-      .then((res) => {
-        const personnelID = res.data.personnel_ID;
-        console.log("COA REPORTS -This is the personnel_ID: " + personnelID);
-        // Set the personnelID in the state
-        setFormData((prevData) => ({ ...prevData, personnelID }));
-      })
-      .catch((error) => {
-        console.error("Error fetching User_ID:", error);
+
+
+  //===== Edit WITH/FOR FILE =====// - BELOW
+  const [showEditFileForm, setShowEditFileForm] = useState(false);
+  const [editFileFormData, setEditFileFormData] = useState({
+    coa_report_id: "",
+    reference: "",
+    dateCreated: new Date(),
+    details: "",
+    dateReceived: new Date(),
+    complianceStatus: "",
+    file: null,
+    remarks: "",
+    personnelID: "",
+  });
+  console.log("the EditFileformData " + JSON.stringify(editFileFormData));
+
+  const handleEditFileClick = (coa_report_id) => {
+    const selectedRow = coaAuditReports.find(
+      (coaAuditReport) => coaAuditReport.coa_report_id === coa_report_id
+    );
+    if (selectedRow) {
+      console.log("Selected Row Data to edit:", selectedRow);
+      selectedRow.coa_report_id = String(selectedRow.coa_report_id);
+      setEditFileFormData({
+        ...selectedRow,
+        file: selectedRow.file ? new File([], selectedRow.file.name) : null,
       });
-  }, []);
+      setShowEditFileForm(true);
+    }
+  };
+
+  // the "save form function of edit modal"
+  const handleEditFileSubmit = async (e) => {
+    e.preventDefault();
+    const userConfirmed = window.confirm(
+      "Are you sure you want to save changes?"
+    );
+
+    if (!userConfirmed) {
+      // User clicked 'Cancel' in the confirmation dialog
+      alert("Changes not saved.");
+      return;
+    }
+
+    try {
+      // Create a new FormData object
+      const formDataToSend = new FormData();
+      const formattedDateCreated = formData.dateCreated.toLocaleDateString();
+      const formattedDateReceived = formData.dateReceived.toLocaleDateString();
+
+      // Append the non-file data to formDataToSend
+      formDataToSend.append("coa_report_id", editFileFormData.coa_report_id);
+      formDataToSend.append("reference", editFileFormData.reference);
+      formDataToSend.append("date_created", formattedDateCreated);
+      formDataToSend.append("details", editFileFormData.details);
+      formDataToSend.append("date_received", formattedDateReceived);
+      formDataToSend.append(
+        "compliance_status",
+        editFileFormData.compliance_status
+      );
+      formDataToSend.append("remarks", editFileFormData.remarks);
+      formDataToSend.append("personnel_ID", editFileFormData.personnel_ID);
+
+      // Append the file if it exists
+      if (editFileFormData.file && editFileFormData.file instanceof File) {
+        formDataToSend.append("file", editFileFormData.file);
+      }
+
+      // Make the API call to update the COA Audit Report details
+      const response = await makeRequest.put(
+        `/updateCOAReportFile/${editFileFormData.coa_report_id}`,
+        formDataToSend
+      );
+
+      if (response.data.Status === "Success") {
+        alert("COA Audit Reports edited successfully!");
+        setShowEditFileForm(false);
+        fetchCOAAuditReports(); // Refresh the COA Audit Report list
+      } else {
+        alert("Error editing COA Audit Reports. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred while editing the COA Audit Report.");
+    }
+  };
+
+  //EDIT WITH/FOR FILE ABOVE
+
+  // for more details
+  const [selectedRowData, setSelectedRowData] = useState(null);
+  const [coaHistory, setCOAHistory] = useState([]);
+  const [isInfoModalOpen, setInfoModalOpen] = useState(false);
+
+  const fetchCOAHistory = async (coa_report_id) => {
+    try {
+      const response = await makeRequest.get(
+        `/getCOAAuditReportHistory/${coa_report_id}`
+      );
+      console.log("API Response:", response.data);
+      setCOAHistory(response.data);
+    } catch (error) {
+      console.error("Error fetching document history:", error);
+    }
+  };
+
+  const handleInfoClick = (coa_report_id) => {
+    // Find the selected row data based on the doc_id
+    const selectedRow = coaAuditReports.find(
+      (coaAuditReports) => coaAuditReports.coa_report_id === coa_report_id
+    );
+    if (selectedRow) {
+      setSelectedRowData(selectedRow);
+      setInfoModalOpen(true);
+      fetchCOAHistory(coa_report_id); // Fetch document history when the modal opens
+    }
+  };
 
   return (
     <div className="h-auto mt-2 p-1 px-5">
@@ -230,14 +351,40 @@ export default function COAAuditReports() {
           handleChange={handleChange}
           handleFileChange={handleFileChange}
         />
-        <COAReportsAdminTable 
-        currentItems={currentItems} />
+        <COAReportsAdminTable
+          currentItems={currentItems}
+          handleEditFileClick={handleEditFileClick}
+          handleInfoClick={handleInfoClick}
+        />
 
         <COAReportsAdminPagination
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
           itemsPerPage={itemsPerPage}
           totalItems={coaAuditReports.length}
+        />
+
+        {/* Edit (file) Modal  Form */}
+        {showEditFileForm && (
+          <COAReportsEditForm
+            editFileFormData={editFileFormData}
+            handleEditFileSubmit={handleEditFileSubmit}
+            handleCloseEditForm={() => setShowEditFileForm(false)}
+            handleChange={(e) =>
+              setEditFileFormData({
+                ...editFileFormData,
+                [e.target.name]: e.target.value,
+              })
+            }
+            handleFileChange={handleFileChange}
+          />
+        )}
+
+        <COAReportsAdminMoreDetails
+          isInfoModalOpen={isInfoModalOpen}
+          selectedRowData={selectedRowData}
+          setInfoModalOpen={setInfoModalOpen}
+          coaHistory={coaHistory}
         />
       </div>
     </div>
