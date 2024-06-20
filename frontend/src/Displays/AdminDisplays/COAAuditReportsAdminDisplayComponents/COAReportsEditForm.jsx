@@ -55,7 +55,7 @@ export default function COAReportsEditForm({
             />
           </div>
 
-          <div className="flex flex-col">
+          <div className="hidden   flex-col">
             <label className="mb-1 text-sm font-semibold">Date Created</label>
             <input
               disabled
@@ -82,7 +82,7 @@ export default function COAReportsEditForm({
             />
           </div>
 
-          <div className="flex flex-col">
+          <div className="hidden flex-col">
             <label className="mb-1 text-sm font-semibold">Date Received</label>
             <input
               disabled

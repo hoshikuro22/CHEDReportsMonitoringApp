@@ -94,6 +94,16 @@ export default function AdminHeader() {
               </a>
 
               <a
+                href="/admin/personnels"
+                className={`text-white font-semibold py-1 px-2 rounded gap-3 mr-10 ${
+                  location.pathname === "/admin/personnels"
+                    ? "bg-gray-500 hover:bg-gray-700 font-bold"
+                    : "hover:bg-gray-700"
+                }`}
+              >
+                Personnels
+              </a>
+              <a
                 href="/admin/activitylog"
                 className={`text-white font-semibold py-1 px-2 rounded gap-3 mr-10 ${
                   location.pathname === "/admin/activitylog"

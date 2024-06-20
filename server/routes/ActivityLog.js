@@ -34,6 +34,6 @@ router.get('/getActivityLog', (req, res) => {
 
   
 
-//last line sa admin:reports
+//last line sa admin:activity log
 
 export default router;

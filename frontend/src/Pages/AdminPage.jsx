@@ -9,6 +9,7 @@ import Reports from "../Displays/AdminDisplays/Reports";
 import COAAuditReports from "../Displays/AdminDisplays/COAAuditReports";
 import Dashboard from "../Displays/AdminDisplays/Dashboard";
 import ActivityLog from "../Displays/AdminDisplays/ActivityLog";
+import Personnels from "../Displays/AdminDisplays/Personnels";
 
 export default function AdminPage() {
     const [auth, setAuth] = useState(false);
@@ -63,6 +64,7 @@ export default function AdminPage() {
                   <Route path="/coaauditreports" element={<COAAuditReports />} />
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/activitylog" element={<ActivityLog />} />
+                  <Route path="/personnels" element={<Personnels />} />
                 </Routes>
               </div>
             ) : (

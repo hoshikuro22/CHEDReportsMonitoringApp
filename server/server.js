@@ -7,13 +7,14 @@ import bcrypt from "bcrypt";
 import reportsRoutes from "./routes/Reports.js";
 import coaauditreportsRoutes from "./routes/CoaAuditReports.js";
 import activitylogRoutes from "./routes/ActivityLog.js";
+import personnelsRoutes from "./routes/Personnels.js"
 
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: ["http://192.168.254.105:5174"],
     methods: ["POST", "GET", "DELETE", "PUT"],
     credentials: true,
   })
@@ -115,6 +116,7 @@ app.post("/login", (req, res) => {
   app.use("/", reportsRoutes);
   app.use("/", coaauditreportsRoutes);
   app.use("/", activitylogRoutes);
+  app.use("/", personnelsRoutes);
 
 
 

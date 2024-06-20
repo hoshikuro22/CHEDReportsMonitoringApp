@@ -253,7 +253,7 @@ router.post("/addCOAAuditReport", upload.single("file"), async (req, res) => {
           } else {
             // Insert into activity_log table
             const nextActivityLogId = await getNextActivityLogId();
-            const activityDescription = `Added ${file.filename}`;
+            const activityDescription = `Added ${file.filename}` + ' (COA)';
             const myDate = new Date();
             myDate.toLocaleString("en-US", {
               timeZone: "Asia/Manila",
